@@ -1,6 +1,7 @@
 package com.example.notify;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Icon;
 
 public class Notification_item {
     private int id;
@@ -9,8 +10,9 @@ public class Notification_item {
     private String app;
     private int src;
     private Bitmap bitmap;
+    private Icon largeIcon;
 
-    public Notification_item(int id, String title, String content, String app, int src) {
+    public Notification_item(int id, String title, String content, String app, int src, Icon largeIcon) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -18,6 +20,8 @@ public class Notification_item {
 //        this.src = Supplies.getSrc(app);
         this.src = src;
 //        this.bitmap = bitmap;
+
+        this.largeIcon = largeIcon;
     }
 
 
@@ -70,5 +74,11 @@ public class Notification_item {
     }
 
 
+    public Icon getLargeIcon() {
+        return largeIcon;
+    }
 
+    public void setLargeIcon(Icon largeIcon) {
+        this.largeIcon = largeIcon;
+    }
 }

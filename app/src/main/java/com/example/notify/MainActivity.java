@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void listenerConnected(){
-        recyclerView.setBackgroundColor(Color.parseColor("#FFEB3B"));
+        recyclerView.setBackgroundColor(Color.parseColor("#000000"));
         socketConnect();
     }
 

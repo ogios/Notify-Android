@@ -1,5 +1,10 @@
 package com.example.notify;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +41,19 @@ public class Notification_Adapter extends RecyclerView.Adapter<Notification_Adap
 
     public void onPost(Notification_item item){
         item.setBitmap(mainActivity.getBitmap(item.getApp(), item.getSrc() ));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && item.getLargeIcon() != null) {
+            Log.d("TAG", "onPost: Use largeIcon");
+            Drawable drawable = item.getLargeIcon().loadDrawable(mainActivity.getApplicationContext());
+            int width = drawable.getIntrinsicWidth();
+            int height = drawable.getIntrinsicHeight();
+
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, width, height);
+            drawable.draw(canvas);
+            item.setBitmap(bitmap);
+        }
+
         notificationItems.add(item);
         notifyItemInserted(notificationItems.size());
         if (!Supplies.IP.equals("")){

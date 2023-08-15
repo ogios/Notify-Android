@@ -4,6 +4,8 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Icon;
+import android.os.Build;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
@@ -29,11 +31,16 @@ public class NotificationListener extends NotificationListenerService {
         String title = extras.getString(Notification.EXTRA_TITLE, null);
         String content = extras.getString(Notification.EXTRA_TEXT, null);
         int smallIcon = extras.getInt(Notification.EXTRA_SMALL_ICON,R.mipmap.ic_launcher);
-//        Bitmap bitmap = extras.getParcelable(Notification.EXTRA_LARGE_ICON);
-//        Bitmap smallIcon =  extras.getParcelable(Notification.EXTRA_SMALL_ICON);
+        Icon largeIcon = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            largeIcon = notification.getLargeIcon();
+            if (largeIcon == null) Log.d(TAG, "onNotificationPosted: null largeIcon");
+        } else {
+            Log.d(TAG, "onNotificationPosted: No largeIcon");
+        }
         String packageName = sbn.getPackageName();
         if (title != null && content != null){
-            Notification_Adapter.getInstance().onPost(new Notification_item(id, title, content, packageName, smallIcon));
+            Notification_Adapter.getInstance().onPost(new Notification_item(id, title, content, packageName, smallIcon, largeIcon));
         }
         Log.d(TAG, "onNotificationPosted: !!!!!!!!!!!!!!!"+sbn.getPackageName());
     }

@@ -9,7 +9,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.net.Inet6Address;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 
 public class SETIP extends AppCompatActivity {
 
@@ -31,14 +34,22 @@ public class SETIP extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
         editor = sharedPreferences.edit();
+        try {
+            IP.setText(sharedPreferences.getString("ip", ""));
+            PORT.setText(sharedPreferences.getString("port", "5589"));
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
 
         commit.setOnClickListener(view -> {
             try {
                 String ip = String.valueOf(IP.getText());
-                int port = Integer.parseInt(String.valueOf(PORT.getText()));
-                checkIP(ip, port);
+//                int port = Integer.parseInt(String.valueOf(PORT.getText()));
+                String port = String.valueOf(PORT.getText());
+                checkIP(ip, Integer.parseInt(port));
                 editor.putString("ip", ip);
-                editor.putInt("port", port);
+                editor.putString("port", port);
                 editor.commit();
                 Supplies.init();
                 finish();
@@ -51,10 +62,17 @@ public class SETIP extends AppCompatActivity {
     }
 
     public void checkIP(String ip, int port) throws Exception {
-        InetSocketAddress inetSocketAddress = new InetSocketAddress(ip, port);
-        if (inetSocketAddress.getAddress() == null || inetSocketAddress.getPort() <0){
-            throw new Exception();
-        }
+//        new Thread(() -> {
+//            try {
+//                System.out.println(Inet6Address.getByName(ip));
+//            } catch (UnknownHostException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }).start();
+//        InetSocketAddress inetSocketAddress = new InetSocketAddress(ip, port);
+//        if (inetSocketAddress.getAddress() == null || inetSocketAddress.getPort() <0){
+//            throw new Exception();
+//        }
 //        if (ip.contains(":")){
 //            return true;
 //        }

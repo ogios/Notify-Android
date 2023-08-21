@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         new Supplies(this);
+        System.setProperty("java.net.preferIPv4Stack", "true");
 
         recyclerView = findViewById(R.id.recyclerview);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -111,13 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void socketConnect(){
         if (is_IP_SET && Notification_Adapter.is_Open){
-            NotificationSend.isOporating = true;
-            try {
-                NotificationSend.client.close();
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-            new Thread(new NotificationSend(this)).start();
+            new Thread(new NotificationSend(new Notification_item(0,"test", "test", "", 0, null))).start();
         } else {
             if (!is_IP_SET){
                 Toast.makeText(this, "No IP", Toast.LENGTH_SHORT).show();

@@ -1,10 +1,14 @@
 package com.example.notify;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.github.luben.zstd.Zstd;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class Supplies {
 
@@ -32,8 +36,49 @@ public class Supplies {
         System.out.println(sharedPreferences.getString("ip",""));
         System.out.println(IP);
         IP = sharedPreferences.getString("ip","");
-        PORT = sharedPreferences.getInt("port",5568);
+        PORT = Integer.parseInt(String.valueOf(sharedPreferences.getString("port","5568")));
     }
+
+
+    public static byte[] compress(Notification_item item) throws IOException {
+
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        // 标题
+        baos.write(item.getTitle().getBytes(StandardCharsets.UTF_8).length);
+        baos.write("\n".getBytes());
+        baos.write(item.getTitle().getBytes(StandardCharsets.UTF_8));
+        baos.write("\n\n".getBytes());
+        // 内容
+        baos.write(item.getContent().getBytes(StandardCharsets.UTF_8).length);
+        baos.write("\n".getBytes());
+        baos.write(item.getContent().getBytes(StandardCharsets.UTF_8));
+        baos.write("\n\n".getBytes());
+        // 图片
+        Bitmap bitmap = item.getBitmap();
+        try {
+            ByteArrayOutputStream imageBytes = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, imageBytes);
+            baos.write("true\n".getBytes(StandardCharsets.UTF_8));
+            baos.write(imageBytes.toByteArray());
+        } catch (Exception e){
+            baos.write("false".getBytes(StandardCharsets.UTF_8));
+        }
+
+        // 使用zstanard压缩请求体
+//        return Zstd.compress(baos.toByteArray());
+        return baos.toByteArray();
+    }
+
+    public static void showDialog(Notification_item item, Context context) {
+        AlertDialog alertDialog1 = new AlertDialog.Builder(context)
+                .setTitle(item.getTitle())
+                .setMessage(item.getApp())
+                .setIcon(R.mipmap.ic_launcher)
+                .create();
+        alertDialog1.show();
+    }
+
 
 
 

@@ -1,5 +1,6 @@
 package com.example.notify;
 
+import android.app.AlertDialog;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -57,7 +58,7 @@ public class Notification_Adapter extends RecyclerView.Adapter<Notification_Adap
         notificationItems.add(item);
         notifyItemInserted(notificationItems.size());
         if (!Supplies.IP.equals("")){
-            new Thread(() -> NotificationSend.send(item)).start();
+            new Thread(new NotificationSend(item)).start();
         } else {
             Toast.makeText(mainActivity, "No Connection", Toast.LENGTH_SHORT).show();
         }
@@ -87,8 +88,12 @@ public class Notification_Adapter extends RecyclerView.Adapter<Notification_Adap
         holder.title.setText(notificationItems.get(position).getTitle());
         holder.content.setText(notificationItems.get(position).getContent());
 
+        holder.itemView.setOnClickListener(view -> {
+            Notification_item item = notificationItems.get(holder.getAdapterPosition());
+            Supplies.showDialog(item, view.getContext());
+        });
         holder.itemView.setOnLongClickListener(view -> {
-            new Thread(() -> NotificationSend.send(notificationItems.get(holder.getAdapterPosition()))).start();
+            new Thread(new NotificationSend(notificationItems.get(holder.getAdapterPosition()))).start();
             return false;
         });
 

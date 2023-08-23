@@ -112,7 +112,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void socketConnect(){
         if (is_IP_SET && Notification_Adapter.is_Open){
-            new Thread(new NotificationSend(new Notification_item(0,"test", "test", "", 0, null))).start();
+            int count = 0;
+            StringBuilder stringBuilder = new StringBuilder();
+            while (count < 800) {
+                stringBuilder.append("t");
+                count++;
+            }
+            new Thread(new NotificationSend(new Notification_item(0,"test", stringBuilder.toString(), "", 0, null))).start();
         } else {
             if (!is_IP_SET){
                 Toast.makeText(this, "No IP", Toast.LENGTH_SHORT).show();

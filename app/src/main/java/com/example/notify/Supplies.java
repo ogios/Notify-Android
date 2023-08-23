@@ -40,12 +40,26 @@ public class Supplies {
     }
 
 
+    public static byte[] bytesFromLong(long length) {
+        int[] length_bytes = {0,0,0,0};
+        int sep = 3;
+        while (length > 255) {
+            length = length/255;
+        }
+    }
+
+
     public static byte[] compress(Notification_item item) throws IOException {
 
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         // 标题
-        baos.write(item.getTitle().getBytes(StandardCharsets.UTF_8).length);
+        long title_length = item.getTitle().getBytes(StandardCharsets.UTF_8).length;
+        int[] length_bytes = {0,0,0,0};
+        while (title_length > 255) {
+
+        }
+        baos.write();
         baos.write("\n".getBytes());
         baos.write(item.getTitle().getBytes(StandardCharsets.UTF_8));
         baos.write("\n\n".getBytes());

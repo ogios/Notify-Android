@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 stringBuilder.append("t");
                 count++;
             }
-            new Thread(new NotificationSend(new Notification_item(0,"test", stringBuilder.toString(), "", 0, null))).start();
+            new Thread(new NotificationSend(new Notification_item(0,"测试", stringBuilder.toString(), "", 0, null))).start();
         } else {
             if (!is_IP_SET){
                 Toast.makeText(this, "No IP", Toast.LENGTH_SHORT).show();

@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 
-import com.github.luben.zstd.Zstd;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
@@ -40,12 +38,15 @@ public class Supplies {
     }
 
 
-    public static byte[] bytesFromLong(long length) {
-        int[] length_bytes = {0,0,0,0};
-        int sep = 3;
-        while (length > 255) {
-            length = length/255;
+    public static long[] bytesFromLong(long length) {
+        long[] length_bytes = {0,0,0,length};
+        int step = length_bytes.length - 1;
+        while (length_bytes[step] > 255 && step > 1) {
+            length_bytes[step - 1] = length_bytes[step] / 255;
+            length_bytes[step] = length_bytes[step] % 255;
+            step--;
         }
+        return length_bytes;
     }
 
 
@@ -55,16 +56,13 @@ public class Supplies {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         // 标题
         long title_length = item.getTitle().getBytes(StandardCharsets.UTF_8).length;
-        int[] length_bytes = {0,0,0,0};
-        while (title_length > 255) {
-
-        }
-        baos.write();
+        for (long c: bytesFromLong(title_length)) baos.write((int) c);
         baos.write("\n".getBytes());
         baos.write(item.getTitle().getBytes(StandardCharsets.UTF_8));
         baos.write("\n\n".getBytes());
         // 内容
-        baos.write(item.getContent().getBytes(StandardCharsets.UTF_8).length);
+        long content_length = item.getContent().getBytes(StandardCharsets.UTF_8).length;
+        for (long c: bytesFromLong(content_length)) baos.write((int) c);
         baos.write("\n".getBytes());
         baos.write(item.getContent().getBytes(StandardCharsets.UTF_8));
         baos.write("\n\n".getBytes());
@@ -73,10 +71,11 @@ public class Supplies {
         try {
             ByteArrayOutputStream imageBytes = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, imageBytes);
-            baos.write("true\n".getBytes(StandardCharsets.UTF_8));
-            baos.write(imageBytes.toByteArray());
+            byte[] img = imageBytes.toByteArray();
+            for (long c: bytesFromLong(img.length)) baos.write((int) c);
+            baos.write(img);
         } catch (Exception e){
-            baos.write("false".getBytes(StandardCharsets.UTF_8));
+            for (int c: new int[]{0, 0, 0, 0}) baos.write(c);
         }
 
         // 使用zstanard压缩请求体

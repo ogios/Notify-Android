@@ -54,6 +54,12 @@ public class Supplies {
 
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        // 包
+        long app_length = item.getApp().getBytes(StandardCharsets.UTF_8).length;
+        for (long c: bytesFromLong(app_length)) baos.write((int) c);
+        baos.write("\n".getBytes());
+        baos.write(item.getApp().getBytes(StandardCharsets.UTF_8));
+        baos.write("\n\n".getBytes());
         // 标题
         long title_length = item.getTitle().getBytes(StandardCharsets.UTF_8).length;
         for (long c: bytesFromLong(title_length)) baos.write((int) c);
@@ -73,7 +79,9 @@ public class Supplies {
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, imageBytes);
             byte[] img = imageBytes.toByteArray();
             for (long c: bytesFromLong(img.length)) baos.write((int) c);
+            baos.write("\n".getBytes());
             baos.write(img);
+            baos.write("\n\n".getBytes());
         } catch (Exception e){
             for (int c: new int[]{0, 0, 0, 0}) baos.write(c);
         }

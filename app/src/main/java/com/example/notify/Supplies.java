@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
+import sutils.out.SocketOut;
+
 public class Supplies {
 
 
@@ -47,6 +49,24 @@ public class Supplies {
             step--;
         }
         return length_bytes;
+    }
+
+    public static SocketOut setOutput(Notification_item item) throws Exception {
+        SocketOut so = SocketOut.newSocketOut();
+        so.addBytes(item.getApp().getBytes(StandardCharsets.UTF_8));
+        so.addBytes(item.getTitle().getBytes(StandardCharsets.UTF_8));
+        so.addBytes(item.getContent().getBytes(StandardCharsets.UTF_8));
+
+        Bitmap bitmap = item.getBitmap();
+        try {
+            ByteArrayOutputStream imageBytes = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, imageBytes);
+            byte[] img = imageBytes.toByteArray();
+            so.addBytes(img);
+        } catch (Exception e){
+            so.addBytes(new byte[0]);
+        }
+        return so;
     }
 
 
